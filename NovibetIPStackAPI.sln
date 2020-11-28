@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30709.64
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovibetIPStackAPI.IPStackWrapper", "src\IPStackWrapper\NovibetIPStackAPI.IPStackWrapper.csproj", "{6CD32E94-4CAA-43A3-B80E-FF78744173D3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovibetIPStackAPI.WebApi", "src\WebApi\NovibetIPStackAPI.WebApi.csproj", "{E5377830-7FFE-46C4-A376-47792D340930}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E86953DC-2BAC-4836-A55B-06B8F28EFFE6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB58383-1731-4108-AF5A-727AED51377E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovibetIPStackAPI.UnitTests", "tests\NovibetIPStackAPI.UnitTests\NovibetIPStackAPI.UnitTests.csproj", "{3249502B-5830-4619-8A1A-558FC2BF624B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovibetIPStackAPI.Tests.Kernel", "tests\NovibetIPStackAPI.Tests.Kernel\NovibetIPStackAPI.Tests.Kernel.csproj", "{9ABBE4D4-5731-4046-BDF3-296514FF28AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovibetIPStackAPI.Infrastructure", "..\NovibetIPStackAPI.Infrastructure\NovibetIPStackAPI.Infrastructure.csproj", "{C8674F0B-9D34-43AE-A597-9E69AD15C06A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6CD32E94-4CAA-43A3-B80E-FF78744173D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CD32E94-4CAA-43A3-B80E-FF78744173D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CD32E94-4CAA-43A3-B80E-FF78744173D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CD32E94-4CAA-43A3-B80E-FF78744173D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5377830-7FFE-46C4-A376-47792D340930}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5377830-7FFE-46C4-A376-47792D340930}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5377830-7FFE-46C4-A376-47792D340930}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5377830-7FFE-46C4-A376-47792D340930}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3249502B-5830-4619-8A1A-558FC2BF624B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3249502B-5830-4619-8A1A-558FC2BF624B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3249502B-5830-4619-8A1A-558FC2BF624B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3249502B-5830-4619-8A1A-558FC2BF624B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ABBE4D4-5731-4046-BDF3-296514FF28AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ABBE4D4-5731-4046-BDF3-296514FF28AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ABBE4D4-5731-4046-BDF3-296514FF28AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ABBE4D4-5731-4046-BDF3-296514FF28AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8674F0B-9D34-43AE-A597-9E69AD15C06A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8674F0B-9D34-43AE-A597-9E69AD15C06A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8674F0B-9D34-43AE-A597-9E69AD15C06A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8674F0B-9D34-43AE-A597-9E69AD15C06A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6CD32E94-4CAA-43A3-B80E-FF78744173D3} = {E86953DC-2BAC-4836-A55B-06B8F28EFFE6}
+		{E5377830-7FFE-46C4-A376-47792D340930} = {E86953DC-2BAC-4836-A55B-06B8F28EFFE6}
+		{3249502B-5830-4619-8A1A-558FC2BF624B} = {0AB58383-1731-4108-AF5A-727AED51377E}
+		{9ABBE4D4-5731-4046-BDF3-296514FF28AF} = {0AB58383-1731-4108-AF5A-727AED51377E}
+		{C8674F0B-9D34-43AE-A597-9E69AD15C06A} = {E86953DC-2BAC-4836-A55B-06B8F28EFFE6}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CA9848D1-5811-4D29-A278-E819A228863D}
+	EndGlobalSection
+EndGlobal

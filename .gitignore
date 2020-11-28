@@ -338,4 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
-/Test/appsettings.Development.json
+/tests/NovibetIPStackAPI.UnitTests/appsettings.tests.Development.json
+/tests/NovibetIPStackAPI.UnitTests/appsettings.tests.json
+/src/WebApi/appsettings.Development.json
+/src/WebApi/appsettings.json
