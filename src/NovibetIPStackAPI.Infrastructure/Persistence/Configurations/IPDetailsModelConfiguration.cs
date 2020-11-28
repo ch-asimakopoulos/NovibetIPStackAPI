@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NovibetIPStackAPI.Core.Models;
+using NovibetIPStackAPI.Core.Models.IPRelated;
 using System;
 using System.Collections.Generic;
 using System.Text;

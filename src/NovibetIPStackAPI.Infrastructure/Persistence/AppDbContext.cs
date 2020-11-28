@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NovibetIPStackAPI.Core.Models;
+using NovibetIPStackAPI.Core.Models.BatchRelated;
+using NovibetIPStackAPI.Core.Models.IPRelated;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +18,8 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence
         }
 
         public DbSet<IPDetailsModel> IPDetails { get; set; }
-
+        public DbSet<JobModel> Jobs { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

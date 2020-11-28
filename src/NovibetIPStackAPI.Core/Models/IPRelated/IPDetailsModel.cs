@@ -1,11 +1,11 @@
-﻿using NovibetIPStackAPI.Core.Interfaces;
-using NovibetIPStackAPI.Core.Models.DTOs;
+﻿using NovibetIPStackAPI.Core.Interfaces.IPRelated;
+using NovibetIPStackAPI.Core.Models.IPRelated.DTOs;
 using NovibetIPStackAPI.Kernel.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace NovibetIPStackAPI.Core.Models
+namespace NovibetIPStackAPI.Core.Models.IPRelated
 {
     /// <summary>
     /// The domain model for the Geolocational IP details. This is the model that will be saved in the persistence layer and includes more information, such as the date it was created or last modified.

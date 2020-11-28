@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using NovibetIPStackAPI.Core.Interfaces;
+using NovibetIPStackAPI.Core.Interfaces.IPRelated;
 
-namespace NovibetIPStackAPI.Core.Models.DTOs
+namespace NovibetIPStackAPI.Core.Models.IPRelated.DTOs
 {
     /// <summary>
     /// Implements the IPDetails interface. Has the geolocation details deriving from an IP address.

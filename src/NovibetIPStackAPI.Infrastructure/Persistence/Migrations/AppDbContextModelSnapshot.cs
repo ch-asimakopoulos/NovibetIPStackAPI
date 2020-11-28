@@ -19,7 +19,49 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.0");
 
-            modelBuilder.Entity("NovibetIPStackAPI.Core.Models.IPDetailsModel", b =>
+            modelBuilder.Entity("NovibetIPStackAPI.Core.Models.BatchRelated.JobModel", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("BatchOperationResult")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateEnded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateLastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ItemsDone")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ItemsLeft")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ItemsSucceeded")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("JobKey")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("requestJSON")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobKey")
+                        .IsUnique();
+
+                    b.ToTable("JobModel");
+                });
+
+            modelBuilder.Entity("NovibetIPStackAPI.Core.Models.IPRelated.IPDetailsModel", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()

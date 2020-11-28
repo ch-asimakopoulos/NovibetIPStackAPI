@@ -1,5 +1,5 @@
-﻿using NovibetIPStackAPI.Core.Interfaces;
-using NovibetIPStackAPI.Core.Models.DTOs;
+﻿using NovibetIPStackAPI.Core.Interfaces.IPRelated;
+using NovibetIPStackAPI.Core.Models.IPRelated.DTOs;
 using NovibetIPStackAPI.IPStackWrapper.Exceptions;
 using NovibetIPStackAPI.IPStackWrapper.Services;
 using NovibetIPStackAPI.Tests.Kernel;

@@ -6,8 +6,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System;
-using NovibetIPStackAPI.Core.Interfaces;
-using NovibetIPStackAPI.Core.Models.DTOs;
+using NovibetIPStackAPI.Core.Interfaces.IPRelated;
+using NovibetIPStackAPI.Core.Models.IPRelated.DTOs;
 
 namespace NovibetIPStackAPI.IPStackWrapper.Services
 {

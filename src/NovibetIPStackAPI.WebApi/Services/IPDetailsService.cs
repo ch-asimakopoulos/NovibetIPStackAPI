@@ -1,4 +1,5 @@
-﻿using NovibetIPStackAPI.Core.Interfaces;
+﻿using NovibetIPStackAPI.Core.Interfaces.IPRelated;
+using NovibetIPStackAPI.Core.Models.IPRelated.DTOs;
 using NovibetIPStackAPI.Infrastructure.Persistence;
 using NovibetIPStackAPI.IPStackWrapper.Services;
 using NovibetIPStackAPI.IPStackWrapper.Services.Interfaces;

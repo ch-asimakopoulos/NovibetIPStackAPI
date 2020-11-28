@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NovibetIPStackAPI.Core.Models;
-using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces;
+using NovibetIPStackAPI.Core.Models.IPRelated;
 using NovibetIPStackAPI.Infrastructure.Persistence.Shared;
 using System;
 using System.Collections.Generic;
@@ -8,11 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NovibetIPStackAPI.Infrastructure.Persistence;
+using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces.IPRelated;
 
-namespace NovibetIPStackAPI.Infrastructure.Repositories
+namespace NovibetIPStackAPI.Infrastructure.Repositories.IPRelated
 {
     /// <summary>
-    /// An implementation of the IIPDetailsRepository interface. This repository is specific to the IPDetails model and includes a lot of operations that can be applied.
+    /// An implementation of the IIPDetailsRepository interface. This repository is specific to the IPDetails model and includes a lot of CRUD operations that can be applied.
     /// </summary>
     public class IPDetailsRepository : IIPDetailsRepository
     {

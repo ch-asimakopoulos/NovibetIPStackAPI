@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
-using NovibetIPStackAPI.Core.Interfaces;
-using NovibetIPStackAPI.Core.Models;
+using NovibetIPStackAPI.Core.Interfaces.IPRelated;
+using NovibetIPStackAPI.Core.Models.IPRelated;
 using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces;
+using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces.IPRelated;
 using NovibetIPStackAPI.IPStackWrapper.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -72,33 +73,39 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence
                 if (!_cache.TryGetValue(key: ip, out result))
                 {
                     result = _repository.GetByIPAddress(ip);
-                    _cache.Set(key: result.IP, value: result, options: _memoryCacheEntryOptions);
-                    return result;
-                }
-            }
-            catch
-            {
-                IPDetails dets = _IIPInfoProvider.GetDetails(ip);
-                result = new IPDetailsModel()
-                {
-                    City = dets.City,
-                    Continent = dets.Continent,
-                    Country = dets.Country,
-                    IP = ip,
-                    Latitude = dets.Latitude,
-                    Longitude = dets.Longitude,
-                    DateCreated = DateTime.UtcNow,
-                    DateLastModified = DateTime.UtcNow
-                };
+                    if(result != null)
+                    {
+                        _cache.Set(key: result.IP, value: result, options: _memoryCacheEntryOptions);
+                        return result;
+                    }
 
-                Task<IPDetailsModel> ipDetailsModelAddTask = new Task<IPDetailsModel>(() =>
+                    IPDetails dets = _IIPInfoProvider.GetDetails(ip);
+                    result = new IPDetailsModel()
+                    {
+                        City = dets.City,
+                        Continent = dets.Continent,
+                        Country = dets.Country,
+                        IP = ip,
+                        Latitude = dets.Latitude,
+                        Longitude = dets.Longitude,
+                        DateCreated = DateTime.UtcNow,
+                        DateLastModified = DateTime.UtcNow
+                    };
+
+                    Task<IPDetailsModel> ipDetailsModelAddTask = new Task<IPDetailsModel>(() =>
                     {
                         return AddAsync(result).Result;
                     });
 
-                ipDetailsModelAddTask.RunSynchronously();
+                    ipDetailsModelAddTask.RunSynchronously();
 
-                return ipDetailsModelAddTask.Result;
+                    return ipDetailsModelAddTask.Result;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
 
             return result;
@@ -111,30 +118,35 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence
                 if (!_cache.TryGetValue(key: ip, out result))
                 {
                     result = _repository.GetByIPAddress(ip);
-                    _cache.Set(key: result.IP, value: result, options: _memoryCacheEntryOptions);
-                    return result;
+                    if (result != null)
+                    {
+                        _cache.Set(key: result.IP, value: result, options: _memoryCacheEntryOptions);
+                        return result;
+                    }
+
+                    //could also go for the IPInfoProvider class and run the async method here, or break the pdf's contract
+                    //and add a GetDetailsAsync method to the contract.
+                    IPDetails detsFromIpInfoProvider = _IIPInfoProvider.GetDetails(ip);
+
+                    result = new IPDetailsModel()
+                    {
+                        City = detsFromIpInfoProvider.City,
+                        Continent = detsFromIpInfoProvider.Continent,
+                        Country = detsFromIpInfoProvider.Country,
+                        IP = ip,
+                        Latitude = detsFromIpInfoProvider.Latitude,
+                        Longitude = detsFromIpInfoProvider.Longitude,
+                        DateCreated = DateTime.UtcNow,
+                        DateLastModified = DateTime.UtcNow
+                    };
+
+                    return await AddAsync(result);
+
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                //could also go for the IPInfoProvider class and run the async method here, or break the pdf's contract
-                //and add a GetDetailsAsync method to the contract.
-                IPDetails detsFromIpInfoProvider = _IIPInfoProvider.GetDetails(ip); 
-
-                result = new IPDetailsModel()
-                {
-                    City = detsFromIpInfoProvider.City,
-                    Continent = detsFromIpInfoProvider.Continent,
-                    Country = detsFromIpInfoProvider.Country,
-                    IP = ip,
-                    Latitude = detsFromIpInfoProvider.Latitude,
-                    Longitude = detsFromIpInfoProvider.Longitude,
-                    DateCreated = DateTime.UtcNow,
-                    DateLastModified = DateTime.UtcNow
-                };
-
-                return await AddAsync(result);
-                
+                throw ex;
             }
 
             return result;

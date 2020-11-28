@@ -12,6 +12,8 @@ using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces;
 using NovibetIPStackAPI.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore.Design;
 using NovibetIPStackAPI.Infrastructure.Persistence;
+using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces.IPRelated;
+using NovibetIPStackAPI.Infrastructure.Repositories.IPRelated;
 
 namespace Test
 {

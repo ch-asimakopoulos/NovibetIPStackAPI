@@ -1,8 +1,8 @@
-﻿using NovibetIPStackAPI.Core.Models;
+﻿using NovibetIPStackAPI.Core.Models.IPRelated;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace NovibetIPStackAPI.Infrastructure.Repositories.Interfaces
+namespace NovibetIPStackAPI.Infrastructure.Repositories.Interfaces.IPRelated
 {
     /// <summary>
     /// An IPDetails specific repository interface.

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces;
-using NovibetIPStackAPI.Core.Interfaces;
+using NovibetIPStackAPI.Core.Interfaces.IPRelated;
 
 namespace NovibetIPStackAPI.Infrastructure.Persistence.Shared
 {
@@ -38,6 +38,8 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Shared
         }
         public async Task<T> AddAsync(T entity)
         {
+            entity.DateCreated = DateTime.UtcNow;
+            entity.DateLastModified = DateTime.UtcNow;
             await _dbContext.Set<T>().AddAsync(entity);
             await _dbContext.SaveChangesAsync();
 
@@ -46,8 +48,9 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Shared
         }
         public async Task UpdateAsync(T entity)
         {
+            entity.DateLastModified = DateTime.UtcNow;
             _dbContext.Entry(entity).State = EntityState.Modified;
-
+            
             await _dbContext.SaveChangesAsync();
         }
 
