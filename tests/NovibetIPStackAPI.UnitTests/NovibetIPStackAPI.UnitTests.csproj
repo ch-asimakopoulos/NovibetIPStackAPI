@@ -42,7 +42,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\IPStackWrapper\NovibetIPStackAPI.IPStackWrapper.csproj" />
+    <ProjectReference Include="..\..\src\NovibetIPStackAPI.IPStackWrapper\NovibetIPStackAPI.IPStackWrapper.csproj" />
+    <ProjectReference Include="..\..\src\NovibetIPStackAPI.Kernel\NovibetIPStackAPI.Kernel.csproj" />
     <ProjectReference Include="..\NovibetIPStackAPI.Tests.Kernel\NovibetIPStackAPI.Tests.Kernel.csproj" />
   </ItemGroup>
 

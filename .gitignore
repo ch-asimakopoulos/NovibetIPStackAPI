@@ -342,3 +342,6 @@ healthchecksdb
 /tests/NovibetIPStackAPI.UnitTests/appsettings.tests.json
 /src/WebApi/appsettings.Development.json
 /src/WebApi/appsettings.json
+/src/NovibetIPStackAPI.WebApi/appsettings.Development.json
+/src/NovibetIPStackAPI.WebApi/appsettings.json
+/src/NovibetIPStackAPI.WebApi/Properties/launchSettings.json

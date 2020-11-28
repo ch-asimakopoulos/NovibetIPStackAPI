@@ -1,4 +1,4 @@
-using IPStackWrapper;
+using NovibetIPStackAPI.IPStackWrapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;

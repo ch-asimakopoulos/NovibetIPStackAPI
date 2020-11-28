@@ -1,4 +1,4 @@
-﻿using NovibetIPStackAPI.IPStackWrapper.Models.Interfaces;
+﻿using NovibetIPStackAPI.Core.Interfaces;
 using NovibetIPStackAPI.IPStackWrapper.Exceptions;
 
 namespace NovibetIPStackAPI.IPStackWrapper.Services.Interfaces

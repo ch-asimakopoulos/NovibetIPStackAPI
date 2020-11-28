@@ -1,7 +1,7 @@
-﻿using NovibetIPStackAPI.IPStackWrapper.Models.Interfaces;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using NovibetIPStackAPI.Core.Interfaces;
 
-namespace NovibetIPStackAPI.IPStackWrapper.Models.DTOs
+namespace NovibetIPStackAPI.Core.Models.DTOs
 {
     /// <summary>
     /// Implements the IPDetails interface. Has the geolocation details deriving from an IP address.
@@ -17,5 +17,11 @@ namespace NovibetIPStackAPI.IPStackWrapper.Models.DTOs
         public string Continent { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+
+        public IPDetailsDTO MapToDTO()
+        {
+            return this;
+        }
+
     }
 }

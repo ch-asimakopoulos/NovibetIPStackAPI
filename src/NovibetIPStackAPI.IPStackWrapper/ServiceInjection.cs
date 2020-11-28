@@ -3,7 +3,7 @@ using NovibetIPStackAPI.IPStackWrapper.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace IPStackWrapper
+namespace NovibetIPStackAPI.IPStackWrapper
 {
     public static class ServiceInjection
     {

@@ -1,6 +1,6 @@
-﻿using NovibetIPStackAPI.IPStackWrapper.Exceptions;
-using NovibetIPStackAPI.IPStackWrapper.Models.DTOs;
-using NovibetIPStackAPI.IPStackWrapper.Models.Interfaces;
+﻿using NovibetIPStackAPI.Core.Interfaces;
+using NovibetIPStackAPI.Core.Models.DTOs;
+using NovibetIPStackAPI.IPStackWrapper.Exceptions;
 using NovibetIPStackAPI.IPStackWrapper.Services;
 using NovibetIPStackAPI.Tests.Kernel;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace NovibetIPStackAPI.UnitTests.IPStackWrapperTests
 
             //Assert
             (bool, List<string>) AssertEqual = AreEqualHelper.HasEqualPropertyValues<IPDetails>(detailsGolden, details, null);
-            
+
             Assert.True(AssertEqual.Item1);
         }
 

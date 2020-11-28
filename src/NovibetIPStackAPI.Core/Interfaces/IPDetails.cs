@@ -1,4 +1,6 @@
-﻿namespace NovibetIPStackAPI.IPStackWrapper.Models.Interfaces
+﻿using NovibetIPStackAPI.Core.Models.DTOs;
+
+namespace NovibetIPStackAPI.Core.Interfaces
 {
     /// <summary>
     /// Interface that represents the geolocation details that derive from an IP address.
@@ -10,5 +12,7 @@
         string Continent { get; set; }
         double Latitude { get; set; }
         double Longitude { get; set; }
+
+        IPDetailsDTO MapToDTO();
     }
 }

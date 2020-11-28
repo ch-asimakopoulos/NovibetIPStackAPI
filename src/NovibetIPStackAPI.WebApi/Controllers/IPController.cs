@@ -1,7 +1,8 @@
-﻿using NovibetIPStackAPI.IPStackWrapper.Models.Interfaces;
-using NovibetIPStackAPI.IPStackWrapper.Services.Interfaces;
+﻿using NovibetIPStackAPI.IPStackWrapper.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using NovibetIPStackAPI.Core.Interfaces;
+using NovibetIPStackAPI.WebApi.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,26 +13,26 @@ namespace Test.Controllers
     public class IPController : ControllerBase
     {
 
-        private readonly IIPInfoProvider _provider;
-        public IPController(IIPInfoProvider provider)
+        private readonly IIPDetailsService _ipDetailService;
+        public IPController(IIPDetailsService ipDetailService)
         {
-            _provider = provider;
+            _ipDetailService = ipDetailService;
         }
         // GET api/<IPController>/5
         [HttpGet("{ip}")]
         public IActionResult Get(string ip)
         {
-            IPDetails a;
+            IPDetails detailsForThisIp; 
             try
             {
-                a = _provider.GetDetails(ip);
+                detailsForThisIp = _ipDetailService.GetDetails(ip);
             }
             catch (NovibetIPStackAPI.IPStackWrapper.Exceptions.IPServiceNotAvailableException ex)
             {
                 return Problem(detail: ex.Message, statusCode: (int)HttpStatusCode.InternalServerError);
             }
 
-            return Ok(a);
+            return Ok(detailsForThisIp.MapToDTO());
 
         }
 

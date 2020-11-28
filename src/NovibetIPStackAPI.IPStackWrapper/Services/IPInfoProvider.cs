@@ -1,13 +1,13 @@
 ﻿using NovibetIPStackAPI.IPStackWrapper.Exceptions;
 using NovibetIPStackAPI.IPStackWrapper.Models;
-using NovibetIPStackAPI.IPStackWrapper.Models.Interfaces;
 using NovibetIPStackAPI.IPStackWrapper.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System;
-using NovibetIPStackAPI.IPStackWrapper.Models.DTOs;
+using NovibetIPStackAPI.Core.Interfaces;
+using NovibetIPStackAPI.Core.Models.DTOs;
 
 namespace NovibetIPStackAPI.IPStackWrapper.Services
 {
