@@ -1,0 +1,21 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+  "IPStackAPI": {
+    "BaseURL": "http://api.ipstack.com/",
+    "APIKey": "YOUR_IPStack_API_KEY"
+  },
+  "SQLServerConnectionString": "YOUR_CONNECTION_STRING_HERE",
+  "MemoryCacheOptions": {
+    "AbsoluteExpirationTimeInSeconds": 60
+  },
+  "BatchUpdateJobOptions": {
+    "ItemsPerBatchTransaction":  10
+  }
+}
