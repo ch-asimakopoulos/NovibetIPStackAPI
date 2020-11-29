@@ -79,10 +79,6 @@ namespace Test
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseHttpsRedirection();
-            }
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
@@ -94,6 +90,8 @@ namespace Test
                 c.SwaggerEndpoint($"/swagger/v1/swagger.json", "Novibet IP Geolocation API v1.0");
             });
 
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>

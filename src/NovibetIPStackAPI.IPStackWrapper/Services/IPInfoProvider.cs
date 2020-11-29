@@ -8,6 +8,7 @@ using System.Text.Json;
 using System;
 using NovibetIPStackAPI.Core.Interfaces.IPRelated;
 using NovibetIPStackAPI.Core.Models.IPRelated.DTOs;
+using Microsoft.Extensions.Logging;
 
 namespace NovibetIPStackAPI.IPStackWrapper.Services
 {
@@ -18,10 +19,11 @@ namespace NovibetIPStackAPI.IPStackWrapper.Services
     {
 
         private readonly IPStackHttpClient _ipStackHttpClient;
-
-        public IPInfoProvider(IConfiguration configuration)
+        private readonly ILogger<IPInfoProvider> _logger;
+        public IPInfoProvider(IConfiguration configuration, ILogger<IPInfoProvider> logger)
         {
             _ipStackHttpClient = new IPStackHttpClient(configuration);
+            _logger = logger;
 
         }
 
@@ -92,6 +94,7 @@ namespace NovibetIPStackAPI.IPStackWrapper.Services
             }
             catch (Exception ex)
             {
+                _logger.LogInformation($"IPStack API Exception while getting IP: {ip}. Message: {ex.Message}");
                 throw new IPServiceNotAvailableException(ex.Message);
             }
             finally
