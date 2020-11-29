@@ -53,7 +53,7 @@ namespace NovibetIPStackAPI.IPStackWrapper.Services
             }
             catch (Exception ex)
             {
-                throw new IPServiceNotAvailableException(ex.InnerException.Message);
+                throw new IPServiceNotAvailableException(ex.Message, ex);
             }
 
 

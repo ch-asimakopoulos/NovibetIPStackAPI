@@ -20,13 +20,11 @@ namespace NovibetIPStackAPI.WebApi.Services
     {
 
         private readonly IJobRepository _repository;
-        private readonly IBatchUpdateJobUnitOfWork _batchUpdateJobUnitOfWork;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
-        public BatchUpdateService(IJobRepository repository, IBatchUpdateJobUnitOfWork batchUnitOfWork, IServiceScopeFactory serviceScopeFactory)
+        private readonly IBatchUpdateJobTaskRunner _batchTaskRunner;
+        public BatchUpdateService(IJobRepository repository, IBatchUpdateJobTaskRunner batchTaskRunner)
         {
             _repository = repository;
-            _batchUpdateJobUnitOfWork = batchUnitOfWork;
-            _serviceScopeFactory = serviceScopeFactory;
+            _batchTaskRunner = batchTaskRunner;
         }
             
         /// <summary>
@@ -56,7 +54,7 @@ namespace NovibetIPStackAPI.WebApi.Services
 
             Guid jobKey = _repository.AddAsync(jobModel).GetAwaiter().GetResult().JobKey;
 
-            Task.Factory.StartNew(() => _batchUpdateJobUnitOfWork.ProcessBatchJob(jobKey), new CancellationToken());
+            Task.Factory.StartNew(() => _batchTaskRunner.ProcessBatchJob(jobKey), new CancellationToken());
 
             return jobKey;
         }

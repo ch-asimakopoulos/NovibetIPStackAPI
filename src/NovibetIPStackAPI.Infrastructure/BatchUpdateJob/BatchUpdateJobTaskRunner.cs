@@ -17,15 +17,16 @@ using System.Transactions;
 namespace NovibetIPStackAPI.Infrastructure.BatchUpdateJob
 {
     /// <summary>
-    /// Allows updating IP Geolocation details in batches, by utilizing the unit of work design pattern.
+    /// Allows updating IP Geolocation details in batches, by utilizing the Task Asynchronous design pattern.
     /// </summary>
-    public class BatchUpdateJobUnitOfWork : IBatchUpdateJobUnitOfWork
+    public class BatchUpdateJobTaskRunner : IBatchUpdateJobTaskRunner
     {
         private IJobRepository _jobRepository;
         private IIPDetailsRepository _ipDetailsRepository;
         private readonly int _processedItemsPerBatch;
         private readonly IServiceScopeFactory _iScopeFactory;
-        public BatchUpdateJobUnitOfWork(IConfiguration configuration, IServiceScopeFactory serviceScopeFactory)
+        private List<IPDetailsModel> _ipModelsStored;
+        public BatchUpdateJobTaskRunner(IConfiguration configuration, IServiceScopeFactory serviceScopeFactory)
         {
             _iScopeFactory = serviceScopeFactory;
             if (!int.TryParse(configuration["BatchUpdateJobOptions:ItemsPerBatchTransaction"], out _processedItemsPerBatch))
@@ -44,53 +45,51 @@ namespace NovibetIPStackAPI.Infrastructure.BatchUpdateJob
         {
             using (IServiceScope scope = _iScopeFactory.CreateScope())
             {
-                {
-                    AppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+              
+                        AppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                    _jobRepository = scope.ServiceProvider.GetRequiredService<IJobRepository>();
-                    _ipDetailsRepository = scope.ServiceProvider.GetRequiredService<IIPDetailsRepository>();
-                    //IDbContextTransaction transaction = appDbContext.Database.BeginTransaction();
+                        _jobRepository = scope.ServiceProvider.GetRequiredService<IJobRepository>();
+                        _ipDetailsRepository = scope.ServiceProvider.GetRequiredService<IIPDetailsRepository>();
 
+                        _ipModelsStored = _ipDetailsRepository.List();
 
-                    JobModel jobToProcess = _jobRepository.GetByJobKey(jobKey);
+                        JobModel jobToProcess = _jobRepository.GetByJobKey(jobKey);
 
-                    JsonSerializerOptions options = new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    };
+                        JsonSerializerOptions options = new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        };
 
-                    IPDetailsToUpdateDTO[] itemsToProcess = JsonSerializer.Deserialize<IPDetailsToUpdateDTO[]>(jobToProcess.requestJSON, options);
+                        IPDetailsToUpdateDTO[] itemsToProcess = JsonSerializer.Deserialize<IPDetailsToUpdateDTO[]>(jobToProcess.requestJSON, options);
 
-                    if (itemsToProcess.Count() == 0)
-                    {
-                        throw new ArgumentException($"Job {jobKey} had zero items to process.");
-                    }
+                        if (itemsToProcess.Count() == 0)
+                        {
+                            throw new ArgumentException($"Job {jobKey} had zero items to process.");
+                        }
 
-                    try
-                    {
-                        foreach (int i in Enumerable.Range(0, (itemsToProcess.Count() / _processedItemsPerBatch) + 1))
+                        try
+                        {
+                            foreach (int i in Enumerable.Range(0, (itemsToProcess.Count() / _processedItemsPerBatch) + 1))
+                            {
+
+                                IEnumerable<IPDetailsToUpdateDTO> BatchItemsToProcess = itemsToProcess.Skip(i * _processedItemsPerBatch).Take(_processedItemsPerBatch);
+
+                                BatchToProcess(ref jobToProcess, BatchItemsToProcess);
+
+                            }
+
+                        }
+                        catch (Exception ex)
                         {
 
-                            IEnumerable<IPDetailsToUpdateDTO> BatchItemsToProcess = itemsToProcess.Skip(i * _processedItemsPerBatch).Take(_processedItemsPerBatch);
-
-                            BatchToProcess(ref jobToProcess, BatchItemsToProcess);
+                            //Log exception
 
                         }
 
-                    }
-                    catch (Exception ex)
-                    {
-                        //transaction.Rollback();
-                        //Log exception
-                        jobToProcess.BatchOperationResult = Kernel.Enums.Result.Failure;
-                        _jobRepository.UpdateAsync(jobToProcess).GetAwaiter().GetResult();
-                    }
+                        SetJobCompleted(ref jobToProcess);
 
-                    SetJobCompleted(ref jobToProcess);
 
-                    //transaction.Commit();
-                }
-            }
+                    }
         }
 
         /// <summary>
@@ -106,7 +105,7 @@ namespace NovibetIPStackAPI.Infrastructure.BatchUpdateJob
             {
                 try
                 {
-                    IPDetailsModel ipDetailsModel = _ipDetailsRepository.GetByIPAddress(det.IpAddress);
+                    IPDetailsModel ipDetailsModel = _ipModelsStored.Where(li => li.IP == det.IpAddress).FirstOrDefault();
 
                     ipDetailsModel.City = string.IsNullOrWhiteSpace(det.City) ? ipDetailsModel.City : det.City;
                     ipDetailsModel.Continent = string.IsNullOrWhiteSpace(det.Continent) ? ipDetailsModel.Continent : det.Continent;
@@ -154,6 +153,10 @@ namespace NovibetIPStackAPI.Infrastructure.BatchUpdateJob
                         jobModel.BatchOperationResult = Kernel.Enums.Result.Failure;
                     }
                 }
+            }
+            else
+            {
+                jobModel.BatchOperationResult = Kernel.Enums.Result.Failure;
             }
 
             _jobRepository.UpdateAsync(jobModel).GetAwaiter().GetResult();

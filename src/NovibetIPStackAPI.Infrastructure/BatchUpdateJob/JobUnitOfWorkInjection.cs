@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace NovibetIPStackAPI.Infrastructure.BatchUpdateJob
 {
     /// <summary>
-    /// This class contains all the cache related registrations that are needed for the Caching layer that implements the decorator pattern.
+    /// This class contains all the Task Asynchronous and Unit of Work pattern related registrations that are needed for the Task that implements the batch update job.
     /// </summary>
     public static class JobUnitOfWorkInjection
     {
@@ -14,7 +14,7 @@ namespace NovibetIPStackAPI.Infrastructure.BatchUpdateJob
         public static IServiceCollection InjectJobUnitOfWork(this IServiceCollection services)
         {
 
-            services.AddScoped<IBatchUpdateJobUnitOfWork, BatchUpdateJobUnitOfWork>();
+            services.AddScoped<IBatchUpdateJobTaskRunner, BatchUpdateJobTaskRunner>();
 
             return services;
         }

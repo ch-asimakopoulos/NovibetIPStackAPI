@@ -1,15 +1,15 @@
 ﻿using NovibetIPStackAPI.Core.Interfaces.IPRelated;
-using NovibetIPStackAPI.Infrastructure.Persistence.Caching.Interfaces;
+using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces.IPRelated;
 using NovibetIPStackAPI.IPStackWrapper.Exceptions;
 
 namespace NovibetIPStackAPI.WebApi.Services
 {
     public class IPDetailsService : IIPDetailsService
     {
-        private readonly ICachedIPDetailsRepositoryDecorator _cachedIPDetailsRepository;
-        public IPDetailsService(ICachedIPDetailsRepositoryDecorator cachedIPDetailsRepository)
+        private readonly IIPDetailsRepository _IIPDetailsRepository;
+        public IPDetailsService(IIPDetailsRepository IIPDetailsRepository)
         {
-            _cachedIPDetailsRepository = cachedIPDetailsRepository;
+            _IIPDetailsRepository = IIPDetailsRepository;
         }
 
         public IPDetails GetDetails(string ip)
@@ -17,7 +17,7 @@ namespace NovibetIPStackAPI.WebApi.Services
             IPDetails details;
             try
             {
-                details = _cachedIPDetailsRepository.GetByIPAddress(ip);
+                details = _IIPDetailsRepository.GetByIPAddress(ip);
             }
             catch (IPServiceNotAvailableException ex)
             {

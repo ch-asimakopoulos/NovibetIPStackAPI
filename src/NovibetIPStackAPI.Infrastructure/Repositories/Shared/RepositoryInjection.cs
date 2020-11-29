@@ -16,7 +16,6 @@ namespace NovibetIPStackAPI.Infrastructure.Repositories
         /// </summary>
         public static IServiceCollection InjectRepositories(this IServiceCollection services)
         {
-            services.AddTransient<IIPDetailsRepository, IPDetailsRepository>();
             services.AddTransient<IJobRepository, JobRepository>();
 
             return services;

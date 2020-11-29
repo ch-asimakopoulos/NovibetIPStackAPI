@@ -2,14 +2,11 @@
 using Microsoft.Extensions.Configuration;
 using NovibetIPStackAPI.Core.Interfaces.IPRelated;
 using NovibetIPStackAPI.Core.Models.IPRelated;
-using NovibetIPStackAPI.Infrastructure.Persistence.Caching.Interfaces;
-using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces;
 using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces.IPRelated;
+using NovibetIPStackAPI.Infrastructure.Repositories.IPRelated;
 using NovibetIPStackAPI.IPStackWrapper.Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,17 +15,17 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Caching
     /// <summary>
     /// This class implements a decorator pattern to allow us to retrieve items from an in-memory cache, a persistence repository or the IP Stack API.
     /// </summary>
-    public class CachedIPDetailsRepositoryDecorator : IIPDetailsRepository, ICachedIPDetailsRepositoryDecorator
+    public class CachedIPDetailsRepositoryDecorator : IIPDetailsRepository
     {
-        private readonly IIPDetailsRepository _repository;
         private readonly IMemoryCache _cache;
         private readonly IIPInfoProvider _IIPInfoProvider;
         private readonly MemoryCacheEntryOptions _memoryCacheEntryOptions;
         private readonly SemaphoreSlim _cacheLock;
+        private readonly IPDetailsRepository _repository;
 
-        public CachedIPDetailsRepositoryDecorator(IIPDetailsRepository repository, IMemoryCache cache, IIPInfoProvider ipInfoProvider, IConfiguration configuration)
+        public CachedIPDetailsRepositoryDecorator(AppDbContext appDbContext, IMemoryCache cache, IIPInfoProvider ipInfoProvider, IConfiguration configuration)
         {
-            _repository = repository;
+            _repository = new IPDetailsRepository(appDbContext);
             _cache = cache;
             _IIPInfoProvider = ipInfoProvider;
             _cacheLock = new SemaphoreSlim(1);

@@ -3,9 +3,9 @@
 namespace NovibetIPStackAPI.Infrastructure.BatchUpdateJob.Interfaces
 {
     /// <summary>
-    /// The interface of an implementation that allows updating IP Geolocation details in batches, by utilizing the unit of work design pattern.
+    /// The interface of an implementation that allows updating IP Geolocation details in batches, by utilizing the Task Asynchronous Pattern (TAP) design pattern.
     /// </summary>
-    public interface IBatchUpdateJobUnitOfWork
+    public interface IBatchUpdateJobTaskRunner
     {
         /// <summary>
         /// Processes the batch job in hand.

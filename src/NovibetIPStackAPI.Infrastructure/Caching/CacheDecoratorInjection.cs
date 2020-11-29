@@ -1,6 +1,6 @@
-﻿using NovibetIPStackAPI.Infrastructure.Persistence.Caching.Interfaces;
-using NovibetIPStackAPI.Infrastructure.Persistence.Caching;
+﻿using NovibetIPStackAPI.Infrastructure.Persistence.Caching;
 using Microsoft.Extensions.DependencyInjection;
+using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces.IPRelated;
 
 namespace NovibetIPStackAPI.Infrastructure.Caching
 {
@@ -10,12 +10,12 @@ namespace NovibetIPStackAPI.Infrastructure.Caching
     public static class CacheDecoratorInjection
     {
         /// <summary>
-        /// This method contains all the service registrations that are needed for the Web Api Services.
+        /// This method registers all the cache related registrations that are needed for the Caching layer that implements the decorator pattern.
         /// </summary>
         public static IServiceCollection InjectCacheDecorator(this IServiceCollection services)
         {
 
-            services.AddTransient<ICachedIPDetailsRepositoryDecorator, CachedIPDetailsRepositoryDecorator>();
+            services.AddTransient<IIPDetailsRepository, CachedIPDetailsRepositoryDecorator>();
 
             return services;
         }

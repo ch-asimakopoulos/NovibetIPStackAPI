@@ -39,7 +39,6 @@ namespace Test
             services.AddInfrastructure(Configuration);
             services.InjectRepositories();
             services.InjectWebApiServices();
-            services.AddTransient<IIPDetailsRepository, IPDetailsRepository>();
 
 
             services.AddApiVersioning(cfg =>
