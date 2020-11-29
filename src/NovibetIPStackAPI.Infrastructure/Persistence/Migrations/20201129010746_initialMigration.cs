@@ -28,7 +28,7 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "JobModel",
+                name: "Jobs",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -45,7 +45,7 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_JobModel", x => x.Id);
+                    table.PrimaryKey("PK_Jobs", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(
@@ -55,8 +55,8 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_JobModel_JobKey",
-                table: "JobModel",
+                name: "IX_Jobs_JobKey",
+                table: "Jobs",
                 column: "JobKey",
                 unique: true);
         }
@@ -67,7 +67,7 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Migrations
                 name: "IPDetails");
 
             migrationBuilder.DropTable(
-                name: "JobModel");
+                name: "Jobs");
         }
     }
 }

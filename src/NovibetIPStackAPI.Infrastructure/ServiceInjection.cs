@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using NovibetIPStackAPI.Infrastructure.Persistence;
 using Microsoft.Extensions.Configuration;
+using NovibetIPStackAPI.Infrastructure.Repositories;
+using NovibetIPStackAPI.Infrastructure.BatchUpdateJob;
+using NovibetIPStackAPI.Infrastructure.Caching;
 
 namespace NovibetIPStackAPI.Infrastructure
 {
@@ -16,6 +19,10 @@ namespace NovibetIPStackAPI.Infrastructure
         {
             services.AddDbContext<AppDbContext>(options =>
                                                 options.UseSqlServer(configuration["SQLServerConnectionString"]));
+
+            services.InjectRepositories();
+            services.InjectCacheDecorator();
+            services.InjectJobUnitOfWork();
 
             return services;
         }

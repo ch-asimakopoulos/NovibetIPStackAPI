@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using NovibetIPStackAPI.Core.Interfaces.IPRelated;
 using NovibetIPStackAPI.Core.Models.IPRelated;
+using NovibetIPStackAPI.Infrastructure.Persistence.Caching.Interfaces;
 using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces;
 using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces.IPRelated;
 using NovibetIPStackAPI.IPStackWrapper.Services.Interfaces;
@@ -9,24 +10,29 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace NovibetIPStackAPI.Infrastructure.Persistence
+namespace NovibetIPStackAPI.Infrastructure.Persistence.Caching
 {
     /// <summary>
     /// This class implements a decorator pattern to allow us to retrieve items from an in-memory cache, a persistence repository or the IP Stack API.
     /// </summary>
-    public class CachedIPDetailsRepositoryDecorator : IIPDetailsRepository
+    public class CachedIPDetailsRepositoryDecorator : IIPDetailsRepository, ICachedIPDetailsRepositoryDecorator
     {
         private readonly IIPDetailsRepository _repository;
         private readonly IMemoryCache _cache;
         private readonly IIPInfoProvider _IIPInfoProvider;
         private readonly MemoryCacheEntryOptions _memoryCacheEntryOptions;
+        private readonly SemaphoreSlim _cacheLock;
+
         public CachedIPDetailsRepositoryDecorator(IIPDetailsRepository repository, IMemoryCache cache, IIPInfoProvider ipInfoProvider, IConfiguration configuration)
         {
             _repository = repository;
             _cache = cache;
             _IIPInfoProvider = ipInfoProvider;
+            _cacheLock = new SemaphoreSlim(1);
+
 
             int AbsoluteExpirationTimeInSeconds;
             if (!int.TryParse(configuration["MemoryCacheOptions:AbsoluteExpirationTimeInSeconds"], out AbsoluteExpirationTimeInSeconds))
@@ -70,10 +76,11 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence
             IPDetailsModel result;
             try
             {
+                _cacheLock.Wait();
                 if (!_cache.TryGetValue(key: ip, out result))
                 {
                     result = _repository.GetByIPAddress(ip);
-                    if(result != null)
+                    if (result != null)
                     {
                         _cache.Set(key: result.IP, value: result, options: _memoryCacheEntryOptions);
                         return result;
@@ -107,6 +114,10 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence
             {
                 throw ex;
             }
+            finally
+            {
+                _cacheLock.Release();
+            }
 
             return result;
         }
@@ -115,6 +126,7 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence
             IPDetailsModel result;
             try
             {
+                _cacheLock.Wait();
                 if (!_cache.TryGetValue(key: ip, out result))
                 {
                     result = _repository.GetByIPAddress(ip);
@@ -147,6 +159,10 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence
             catch (Exception ex)
             {
                 throw ex;
+            }
+            finally
+            {
+                _cacheLock.Release();
             }
 
             return result;

@@ -10,7 +10,7 @@ using NovibetIPStackAPI.Infrastructure.Persistence;
 namespace NovibetIPStackAPI.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201128212140_initialMigration")]
+    [Migration("20201129010746_initialMigration")]
     partial class initialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,7 +60,7 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Migrations
                     b.HasIndex("JobKey")
                         .IsUnique();
 
-                    b.ToTable("JobModel");
+                    b.ToTable("Jobs");
                 });
 
             modelBuilder.Entity("NovibetIPStackAPI.Core.Models.IPRelated.IPDetailsModel", b =>

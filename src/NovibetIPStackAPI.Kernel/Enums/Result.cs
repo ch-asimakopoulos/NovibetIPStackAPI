@@ -8,7 +8,7 @@ namespace NovibetIPStackAPI.Kernel.Enums
     {
         Success,
         Failure,
-        Partial,
+        PartialSuccess,
         InProcess
     }
 }

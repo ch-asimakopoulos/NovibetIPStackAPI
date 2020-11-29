@@ -54,6 +54,7 @@ namespace NovibetIPStackAPI.Infrastructure.Repositories.IPRelated
             return await _efRepository.AddAsync(entity);
 
         }
+
         public async Task UpdateAsync(IPDetailsModel entity)
         {
             await _efRepository.UpdateAsync(entity);

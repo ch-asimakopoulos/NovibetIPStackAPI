@@ -23,7 +23,7 @@ namespace NovibetIPStackAPI.WebApi.Services
         /// <returns>Information regarding the process of the batch request job.</returns>
         public BatchUpdateInfoDTO GetJobProcessInfo(Guid jobKey)
         {
-            return _repository.GetByJobKey(jobKey).MapToDTO();
+            return _repository.GetByJobKey(jobKey)?.MapToDTO();
 
         }
     }

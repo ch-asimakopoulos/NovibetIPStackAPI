@@ -58,7 +58,7 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Migrations
                     b.HasIndex("JobKey")
                         .IsUnique();
 
-                    b.ToTable("JobModel");
+                    b.ToTable("Jobs");
                 });
 
             modelBuilder.Entity("NovibetIPStackAPI.Core.Models.IPRelated.IPDetailsModel", b =>

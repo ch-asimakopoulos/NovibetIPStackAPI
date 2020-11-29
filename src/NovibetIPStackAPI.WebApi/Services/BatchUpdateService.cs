@@ -1,22 +1,32 @@
-﻿using NovibetIPStackAPI.Core.Models.BatchRelated;
+﻿using Microsoft.Extensions.DependencyInjection;
+using NovibetIPStackAPI.Core.Models.BatchRelated;
 using NovibetIPStackAPI.Core.Models.IPRelated.DTOs;
+using NovibetIPStackAPI.Infrastructure.BatchUpdateJob.Interfaces;
 using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces.BatchRelated;
 using NovibetIPStackAPI.WebApi.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NovibetIPStackAPI.WebApi.Services
 {
+    /// <summary>
+    /// Provides batch update operations for Geolocation IP details.
+    /// </summary>
     public class BatchUpdateService : IBatchUpdateService
     {
 
         private readonly IJobRepository _repository;
-        public BatchUpdateService(IJobRepository repository)
+        private readonly IBatchUpdateJobUnitOfWork _batchUpdateJobUnitOfWork;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        public BatchUpdateService(IJobRepository repository, IBatchUpdateJobUnitOfWork batchUnitOfWork, IServiceScopeFactory serviceScopeFactory)
         {
             _repository = repository;
+            _batchUpdateJobUnitOfWork = batchUnitOfWork;
+            _serviceScopeFactory = serviceScopeFactory;
         }
             
         /// <summary>
@@ -40,13 +50,15 @@ namespace NovibetIPStackAPI.WebApi.Services
                 ItemsDone = 0,
                 ItemsLeft = ipDetails.Count(),
                 ItemsSucceeded = 0,
-                JobKey = new Guid(),
+                JobKey = Guid.NewGuid(),
                 requestJSON = requestJSON
             };
 
-            //Task.Run()
+            Guid jobKey = _repository.AddAsync(jobModel).GetAwaiter().GetResult().JobKey;
 
-            return _repository.AddAsync(jobModel).GetAwaiter().GetResult().JobKey;
+            Task.Factory.StartNew(() => _batchUpdateJobUnitOfWork.ProcessBatchJob(jobKey), new CancellationToken());
+
+            return jobKey;
         }
     }
 }

@@ -14,10 +14,11 @@ namespace NovibetIPStackAPI.Core.Models.BatchRelated.DTOs
         public int ItemsDone { get; set; }
         public int ItemsSucceeded { get; set; }
 
-        public string SuccessPercentage => $"{(ItemsDone == 0 ? 0 : Math.Floor((decimal) ItemsSucceeded / ItemsDone))}% success rate.";
+        public string SuccessPercentage => $"{(ItemsDone == 0 ? 0 : Math.Floor(100 * ((decimal)ItemsSucceeded / (decimal)ItemsDone)))}% success rate.";
 
         public int ItemsLeft { get; set; }
-        
+        public string TotalItemsProcessedAndItemsLeft => $"Batch Progress: {ItemsDone} / {ItemsLeft + ItemsDone}";
+
         public DateTime BatchStartTimeStamp { get; set; }
 
         public DateTime BatchLastModifiedTimeStamp { get; set; }

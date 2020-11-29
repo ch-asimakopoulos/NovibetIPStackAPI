@@ -6,6 +6,7 @@ using NovibetIPStackAPI.WebApi.Services;
 using System.Collections.Generic;
 using NovibetIPStackAPI.Core.Models.IPRelated.DTOs;
 using System;
+using NovibetIPStackAPI.WebApi.Services.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,9 +18,11 @@ namespace Test.Controllers
     {
 
         private readonly IIPDetailsService _ipDetailService;
-        public IPController(IIPDetailsService ipDetailService)
+        private readonly IBatchUpdateService _batchUpdateService;
+        public IPController(IIPDetailsService ipDetailService, IBatchUpdateService batchUpdateService)
         {
             _ipDetailService = ipDetailService;
+            _batchUpdateService = batchUpdateService;
         }
         // GET api/<IPController>/5
         [HttpGet("{ip}")]
@@ -45,7 +48,7 @@ namespace Test.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
 
-            Guid BatchUpdateGUID = _ipDetailService.BatchUpdateDetails(ipDetailsToUpdate);
+            Guid BatchUpdateGUID = _batchUpdateService.BatchUpdateDetails(ipDetailsToUpdate);
 
             return Ok(BatchUpdateGUID);
         }

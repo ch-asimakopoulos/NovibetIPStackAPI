@@ -14,6 +14,11 @@ using Microsoft.EntityFrameworkCore.Design;
 using NovibetIPStackAPI.Infrastructure.Persistence;
 using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces.IPRelated;
 using NovibetIPStackAPI.Infrastructure.Repositories.IPRelated;
+using System.Runtime.CompilerServices;
+using NovibetIPStackAPI.WebApi.Services.Interfaces;
+using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces.BatchRelated;
+using NovibetIPStackAPI.Infrastructure.Repositories.BatchRelated;
+using NovibetIPStackAPI.WebApi;
 
 namespace Test
 {
@@ -32,8 +37,8 @@ namespace Test
             services.AddMemoryCache();
             services.AddIPInfoProvider();
             services.AddInfrastructure(Configuration);
-            services.AddScoped<CachedIPDetailsRepositoryDecorator>();
-            services.AddScoped<IIPDetailsService, IPDetailsService>(); ;
+            services.InjectRepositories();
+            services.InjectWebApiServices();
             services.AddTransient<IIPDetailsRepository, IPDetailsRepository>();
 
 
