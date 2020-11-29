@@ -24,7 +24,7 @@ namespace Test
                     .ConfigureLogging(logging =>
                     {
                         logging.ClearProviders();
-                        logging.AddConsole();
+                        logging.AddConsole().AddDebug().SetMinimumLevel(LogLevel.Debug);
                     });
                 });
     }

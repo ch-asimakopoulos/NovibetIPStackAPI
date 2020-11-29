@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NovibetIPStackAPI.Core.Models.BatchRelated;
 using NovibetIPStackAPI.Core.Models.IPRelated;
 using NovibetIPStackAPI.Core.Models.IPRelated.DTOs;
@@ -26,13 +27,16 @@ namespace NovibetIPStackAPI.Infrastructure.BatchUpdateJob
         private readonly int _processedItemsPerBatch;
         private readonly IServiceScopeFactory _iScopeFactory;
         private List<IPDetailsModel> _ipModelsStored;
-        public BatchUpdateJobTaskRunner(IConfiguration configuration, IServiceScopeFactory serviceScopeFactory)
+        private ILogger<BatchUpdateJobTaskRunner> _logger;
+        public BatchUpdateJobTaskRunner(IConfiguration configuration, IServiceScopeFactory serviceScopeFactory, ILogger<BatchUpdateJobTaskRunner> logger)
         {
             _iScopeFactory = serviceScopeFactory;
+            _logger = logger;
             if (!int.TryParse(configuration["BatchUpdateJobOptions:ItemsPerBatchTransaction"], out _processedItemsPerBatch))
             {
-                //TO FIX
-                throw new Exception();
+                _logger.LogError($"Could not find the ItemsPerBatchTransaction for the batch update job in the provided configuration.");
+                throw new Exception($"Could not find the ItemsPerBatchTransaction for the batch update job in the provided configuration.");
+
             }
 
         }
@@ -45,51 +49,56 @@ namespace NovibetIPStackAPI.Infrastructure.BatchUpdateJob
         {
             using (IServiceScope scope = _iScopeFactory.CreateScope())
             {
-              
-                        AppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                        _jobRepository = scope.ServiceProvider.GetRequiredService<IJobRepository>();
-                        _ipDetailsRepository = scope.ServiceProvider.GetRequiredService<IIPDetailsRepository>();
+                _logger.LogDebug($"Job: {jobKey}, has entered the process batch job scope");
+                _logger.LogInformation($"Job: {jobKey} processing has began.");
+                AppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                        _ipModelsStored = _ipDetailsRepository.List();
+                _jobRepository = scope.ServiceProvider.GetRequiredService<IJobRepository>();
+                _ipDetailsRepository = scope.ServiceProvider.GetRequiredService<IIPDetailsRepository>();
 
-                        JobModel jobToProcess = _jobRepository.GetByJobKey(jobKey);
+                _ipModelsStored = _ipDetailsRepository.List();
 
-                        JsonSerializerOptions options = new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        };
+                JobModel jobToProcess = _jobRepository.GetByJobKey(jobKey);
 
-                        IPDetailsToUpdateDTO[] itemsToProcess = JsonSerializer.Deserialize<IPDetailsToUpdateDTO[]>(jobToProcess.requestJSON, options);
+                JsonSerializerOptions options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
 
-                        if (itemsToProcess.Count() == 0)
-                        {
-                            throw new ArgumentException($"Job {jobKey} had zero items to process.");
-                        }
+                IPDetailsToUpdateDTO[] itemsToProcess = JsonSerializer.Deserialize<IPDetailsToUpdateDTO[]>(jobToProcess.requestJSON, options);
 
-                        try
-                        {
-                            foreach (int i in Enumerable.Range(0, (itemsToProcess.Count() / _processedItemsPerBatch) + 1))
-                            {
+                if (itemsToProcess.Count() == 0)
+                {
+                    _logger.LogError($"Job {jobKey} had zero items to process.");
+                    throw new ArgumentException($"Job {jobKey} had zero items to process.");
+                }
 
-                                IEnumerable<IPDetailsToUpdateDTO> BatchItemsToProcess = itemsToProcess.Skip(i * _processedItemsPerBatch).Take(_processedItemsPerBatch);
+                try
+                {
+                    foreach (int i in Enumerable.Range(0, (itemsToProcess.Count() / _processedItemsPerBatch) + 1))
+                    {
 
-                                BatchToProcess(ref jobToProcess, BatchItemsToProcess);
+                        _logger.LogDebug($"Job {jobKey} is in batch {i} out of {(itemsToProcess.Count() / _processedItemsPerBatch) + 1}");
+                        IEnumerable<IPDetailsToUpdateDTO> BatchItemsToProcess = itemsToProcess.Skip(i * _processedItemsPerBatch).Take(_processedItemsPerBatch);
 
-                            }
-
-                        }
-                        catch (Exception ex)
-                        {
-
-                            //Log exception
-
-                        }
-
-                        SetJobCompleted(ref jobToProcess);
-
+                        BatchToProcess(ref jobToProcess, BatchItemsToProcess);
 
                     }
+
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Job {jobKey} aborted unexpectedly. Exception message: {ex.Message}");
+                    jobToProcess.BatchOperationResult = Kernel.Enums.Result.Aborted;
+                    _jobRepository.UpdateAsync(jobToProcess);
+            
+                }
+
+                SetJobCompleted(ref jobToProcess);
+
+
+            }
         }
 
         /// <summary>
@@ -99,6 +108,7 @@ namespace NovibetIPStackAPI.Infrastructure.BatchUpdateJob
         /// <param name="ipDetails">The part of the batch that will be processed.</param>
         private void BatchToProcess(ref JobModel currentJob, IEnumerable<IPDetailsToUpdateDTO> ipDetails)
         {
+
             int successfulUpdates = 0;
 
             foreach (IPDetailsToUpdateDTO det in ipDetails)
@@ -118,7 +128,7 @@ namespace NovibetIPStackAPI.Infrastructure.BatchUpdateJob
                 }
                 catch (Exception ex)
                 {
-                    //Log exception
+                    _logger.LogError($"Job: {currentJob.JobKey} failed to update detail: {det.IpAddress}. Exception message: {ex.Message}");
 
                 }
             }
@@ -130,8 +140,13 @@ namespace NovibetIPStackAPI.Infrastructure.BatchUpdateJob
 
             _jobRepository.UpdateAsync(currentJob).GetAwaiter().GetResult();
 
+
         }
 
+        /// <summary>
+        /// Marks the process job as completed, with the correct result status depending on successes and failures.
+        /// </summary>
+        /// <param name="jobModel"></param>
         private void SetJobCompleted(ref JobModel jobModel)
         {
             jobModel.DateEnded = DateTime.UtcNow;
@@ -160,6 +175,8 @@ namespace NovibetIPStackAPI.Infrastructure.BatchUpdateJob
             }
 
             _jobRepository.UpdateAsync(jobModel).GetAwaiter().GetResult();
+
+            _logger.LogInformation($"Job: {jobModel.JobKey} is completely processed.");
         }
 
     }

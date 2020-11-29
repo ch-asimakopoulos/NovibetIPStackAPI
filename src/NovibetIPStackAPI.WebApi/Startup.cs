@@ -7,18 +7,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using NovibetIPStackAPI.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using NovibetIPStackAPI.WebApi.Services;
-using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces;
 using NovibetIPStackAPI.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore.Design;
-using NovibetIPStackAPI.Infrastructure.Persistence;
-using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces.IPRelated;
-using NovibetIPStackAPI.Infrastructure.Repositories.IPRelated;
-using System.Runtime.CompilerServices;
-using NovibetIPStackAPI.WebApi.Services.Interfaces;
-using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces.BatchRelated;
-using NovibetIPStackAPI.Infrastructure.Repositories.BatchRelated;
 using NovibetIPStackAPI.WebApi;
+using System.Text.Json.Serialization;
 
 namespace Test
 {
@@ -37,7 +28,6 @@ namespace Test
             services.AddMemoryCache();
             services.AddIPInfoProvider();
             services.AddInfrastructure(Configuration);
-            services.InjectRepositories();
             services.InjectWebApiServices();
 
 
@@ -54,7 +44,7 @@ namespace Test
                 c.SwaggerDoc("v1",
                     new Microsoft.OpenApi.Models.OpenApiInfo()
                     {
-                        Title = "Tichu Sensei API",
+                        Title = "Novibet IP Geolocation Details API",
                         Version = "v1.0",
                         Contact = new Microsoft.OpenApi.Models.OpenApiContact()
                         {
@@ -68,7 +58,8 @@ namespace Test
 
             });
 
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())); ;
 
         }
 
@@ -79,6 +70,13 @@ namespace Test
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHttpsRedirection();
+            }
+
+            app.UseStaticFiles();
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
@@ -90,8 +88,6 @@ namespace Test
                 c.SwaggerEndpoint($"/swagger/v1/swagger.json", "Novibet IP Geolocation API v1.0");
             });
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>

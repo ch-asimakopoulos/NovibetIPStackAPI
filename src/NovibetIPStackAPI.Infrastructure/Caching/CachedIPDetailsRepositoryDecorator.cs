@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using NovibetIPStackAPI.Core.Interfaces.IPRelated;
 using NovibetIPStackAPI.Core.Models.IPRelated;
 using NovibetIPStackAPI.Infrastructure.Repositories.Interfaces.IPRelated;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 namespace NovibetIPStackAPI.Infrastructure.Persistence.Caching
 {
     /// <summary>
-    /// This class implements a decorator pattern to allow us to retrieve items from an in-memory cache, a persistence repository or the IP Stack API.
+    /// An implementation of the IIPDetailsRepository. This class implements a decorator pattern to allow us to retrieve IP detail items from an in-memory cache, a persistence repository or the IP Stack API.
     /// </summary>
     public class CachedIPDetailsRepositoryDecorator : IIPDetailsRepository
     {
@@ -22,20 +23,21 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Caching
         private readonly MemoryCacheEntryOptions _memoryCacheEntryOptions;
         private readonly SemaphoreSlim _cacheLock;
         private readonly IPDetailsRepository _repository;
-
-        public CachedIPDetailsRepositoryDecorator(AppDbContext appDbContext, IMemoryCache cache, IIPInfoProvider ipInfoProvider, IConfiguration configuration)
+        private readonly ILogger<CachedIPDetailsRepositoryDecorator> _logger;
+        public CachedIPDetailsRepositoryDecorator(AppDbContext appDbContext, IMemoryCache cache, IIPInfoProvider ipInfoProvider, IConfiguration configuration, ILogger<CachedIPDetailsRepositoryDecorator> logger)
         {
             _repository = new IPDetailsRepository(appDbContext);
             _cache = cache;
             _IIPInfoProvider = ipInfoProvider;
+            _logger = logger;
             _cacheLock = new SemaphoreSlim(1);
 
 
             int AbsoluteExpirationTimeInSeconds;
             if (!int.TryParse(configuration["MemoryCacheOptions:AbsoluteExpirationTimeInSeconds"], out AbsoluteExpirationTimeInSeconds))
             {
-                //TO FIX
-                throw new Exception();
+                _logger.LogError($"Could not find the absolute expiration time in seconds for the in memory cache in the provided configuration.");
+                throw new Exception($"Could not find the absolute expiration time in seconds for the in memory cache in the provided configuration.");
             }
 
             _memoryCacheEntryOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds((double)AbsoluteExpirationTimeInSeconds));
@@ -59,13 +61,13 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Caching
         public IPDetailsModel GetById(long id)
         {
             IPDetailsModel result = _repository.GetById(id);
-            //_cache.Set(key: result.IP, value: result, options: _memoryCacheEntryOptions);
+            //to do: _cache.Set(key: result.IP, value: result, options: _memoryCacheEntryOptions);
             return result;
         }
         public async Task<IPDetailsModel> GetByIdAsync(long id)
         {
             IPDetailsModel result = await _repository.GetByIdAsync(id);
-            //_cache.Set(key: result.IP, value: result, options: _memoryCacheEntryOptions);
+            //to do: _cache.Set(key: result.IP, value: result, options: _memoryCacheEntryOptions);
             return result;
         }
         public IPDetailsModel GetByIPAddress(string ip)
@@ -76,13 +78,16 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Caching
                 _cacheLock.Wait();
                 if (!_cache.TryGetValue(key: ip, out result))
                 {
+                    _logger.LogDebug($"Did not find ip: {ip} in cache.");
                     result = _repository.GetByIPAddress(ip);
                     if (result != null)
                     {
                         _cache.Set(key: result.IP, value: result, options: _memoryCacheEntryOptions);
+                        _logger.LogDebug($"Found ip: {ip} in database");
                         return result;
                     }
 
+                    _logger.LogDebug($"Did not find ip: {ip} in database. Will try to get it via the IPStack API.");
                     IPDetails dets = _IIPInfoProvider.GetDetails(ip);
                     result = new IPDetailsModel()
                     {
@@ -109,6 +114,7 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Caching
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Could not get ip: {ip} in any of the three ways possible (IPStack API, Caching or Repository). Exception message: {ex.Message}");
                 throw ex;
             }
             finally
@@ -116,6 +122,7 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Caching
                 _cacheLock.Release();
             }
 
+            _logger.LogDebug($"Found ip: {ip} in memory cache.");
             return result;
         }
         public async Task<IPDetailsModel> GetByIPAddressAsync(string ip)
@@ -155,6 +162,7 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence.Caching
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Could not get ip: {ip} in any of the three ways possible (IPStack API, Caching or Repository). Exception message: {ex.Message}");
                 throw ex;
             }
             finally

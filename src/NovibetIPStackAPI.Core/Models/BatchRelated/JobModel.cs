@@ -8,6 +8,9 @@ using System.Text;
 
 namespace NovibetIPStackAPI.Core.Models.BatchRelated
 {
+    /// <summary>
+    /// The  batch request job model which implements IUpdateable and IJob interfaces. This is the persistence layer model and contains more information such as the dates created, modified and ended and the requestJSON object.
+    /// </summary>
     public class JobModel : IUpdateable, IJob
     {
         public long Id { get; set; }

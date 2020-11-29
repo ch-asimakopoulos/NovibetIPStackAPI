@@ -5,6 +5,9 @@ using System.Text;
 
 namespace NovibetIPStackAPI.Core.Models.BatchRelated.DTOs
 {
+    /// <summary>
+    /// The data transfer object that will provide the API endpoint response with information regarding the batch update job process.
+    /// </summary>
     public class BatchUpdateInfoDTO
     {
         public Guid JobKey { get; set; }

@@ -1,4 +1,5 @@
-﻿using NovibetIPStackAPI.Core.Interfaces.IPRelated;
+﻿using Microsoft.Extensions.Logging.Abstractions;
+using NovibetIPStackAPI.Core.Interfaces.IPRelated;
 using NovibetIPStackAPI.Core.Models.IPRelated.DTOs;
 using NovibetIPStackAPI.IPStackWrapper.Exceptions;
 using NovibetIPStackAPI.IPStackWrapper.Services;
@@ -6,17 +7,17 @@ using NovibetIPStackAPI.Tests.Kernel;
 using System.Collections.Generic;
 using Xunit;
 
-namespace NovibetIPStackAPI.UnitTests.IPStackWrapperTests
+namespace NovibetIPStackAPI.Tests.IntegrationTests.IPDetailTests
 {
-    public class GetIPFromIPStackAPITests
+    public class GetIPDetails
     {
 
         [Fact]
-        public void GetsIPDetailsFromIPStackAPISuccessfully()
+        public void GetsIPDetailsSuccessfully()
         {
 
             //Arrange
-            IPWrapperTestSetup IPWrapperTestSetupObject = new IPWrapperTestSetup();
+            IntegrationTestsStartup integrationTestsStartup = new IntegrationTestsStartup();
             string ip = "141.237.3.189";
             IPDetails detailsGolden = new IPDetailsDTO()
             {
@@ -28,7 +29,7 @@ namespace NovibetIPStackAPI.UnitTests.IPStackWrapperTests
             };
 
             //Act
-            IPDetails details = new IPInfoProvider(IPWrapperTestSetupObject.Configuration).GetDetails(ip);
+            IPDetails details = new IPInfoProvider(integrationTestsStartup.Configuration, new NullLogger<IPInfoProvider>()).GetDetails(ip);
 
             //Assert
             (bool, List<string>) AssertEqual = AreEqualHelper.HasEqualPropertyValues<IPDetails>(detailsGolden, details, null);
@@ -41,11 +42,11 @@ namespace NovibetIPStackAPI.UnitTests.IPStackWrapperTests
         {
 
             //Arrange
-            IPWrapperTestSetup IPWrapperTestSetupObject = new IPWrapperTestSetup();
+            IntegrationTestsStartup integrationTestsStartup = new IntegrationTestsStartup();
             string ip = "novibet";
 
             //Assert
-            Assert.Throws<IPServiceNotAvailableException>(() => new IPInfoProvider(IPWrapperTestSetupObject.Configuration).GetDetails(ip));
+            Assert.Throws<IPServiceNotAvailableException>(() => new IPInfoProvider(integrationTestsStartup.Configuration, new NullLogger<IPInfoProvider>()).GetDetails(ip));
         }
     }
 }

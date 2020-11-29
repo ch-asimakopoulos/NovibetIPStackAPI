@@ -3,6 +3,9 @@ using System;
 
 namespace NovibetIPStackAPI.Core.Interfaces.BatchRelated
 {
+    /// <summary>
+    /// Interface that describes a batch operation job.
+    /// </summary>
     public interface IJob
     {
         Result BatchOperationResult { get; set; }

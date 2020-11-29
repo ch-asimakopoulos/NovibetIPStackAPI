@@ -22,7 +22,7 @@ namespace NovibetIPStackAPI.Infrastructure
 
             services.InjectRepositories();
             services.InjectCacheDecorator();
-            services.InjectJobUnitOfWork();
+            services.InjectTaskRunner();
 
             return services;
         }

@@ -8,7 +8,7 @@ namespace NovibetIPStackAPI.IPStackWrapper.Exceptions
     /// </summary>
     public class IPServiceNotAvailableException : Exception
     {
-        //add logging here
+        
         public IPServiceNotAvailableException() : base()
         {
         }

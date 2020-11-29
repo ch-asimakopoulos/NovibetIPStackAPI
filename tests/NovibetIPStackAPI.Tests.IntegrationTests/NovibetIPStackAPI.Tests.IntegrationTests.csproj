@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="appsettings.Development.json" />
+    <None Remove="appsettings.tests.Development.json" />
     <None Remove="appsettings.tests.json" />
   </ItemGroup>
 
@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
@@ -42,8 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\NovibetIPStackAPI.IPStackWrapper\NovibetIPStackAPI.IPStackWrapper.csproj" />
-    <ProjectReference Include="..\..\src\NovibetIPStackAPI.Kernel\NovibetIPStackAPI.Kernel.csproj" />
+    <ProjectReference Include="..\..\src\NovibetIPStackAPI.WebApi\NovibetIPStackAPI.WebApi.csproj" />
     <ProjectReference Include="..\NovibetIPStackAPI.Tests.Kernel\NovibetIPStackAPI.Tests.Kernel.csproj" />
   </ItemGroup>
 

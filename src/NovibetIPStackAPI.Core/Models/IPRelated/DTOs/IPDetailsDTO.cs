@@ -4,7 +4,7 @@ using NovibetIPStackAPI.Core.Interfaces.IPRelated;
 namespace NovibetIPStackAPI.Core.Models.IPRelated.DTOs
 {
     /// <summary>
-    /// Implements the IPDetails interface. Has the geolocation details deriving from an IP address.
+    /// The class that implements the IPDetails interface. Has the geolocation details deriving from an IP address.
     /// </summary>
     public class IPDetailsDTO : IPDetails
     {
@@ -18,6 +18,10 @@ namespace NovibetIPStackAPI.Core.Models.IPRelated.DTOs
         public double Latitude { get; set; }
         public double Longitude { get; set; }
 
+        /// <summary>
+        /// This has to be here because of the interface contract.
+        /// </summary>
+        /// <returns></returns>
         public IPDetailsDTO MapToDTO()
         {
             return this;

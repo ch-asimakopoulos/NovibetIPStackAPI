@@ -10,7 +10,7 @@ using NovibetIPStackAPI.Core.Interfaces.IPRelated;
 namespace NovibetIPStackAPI.Infrastructure.Persistence.Shared
 {
     /// <summary>
-    /// An implementation of the Entity Framework Repository interface.
+    /// An implementation of the Entity Framework Core Repository interface.
     /// </summary>
     /// <typeparam name="T">A generic class that must implement the IUpdateable interface.</typeparam>
     public class EntityFrameworkRepository<T> : IEntityFrameworkRepository<T> where T : class, IUpdateable

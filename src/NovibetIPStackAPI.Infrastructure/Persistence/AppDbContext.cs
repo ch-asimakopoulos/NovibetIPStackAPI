@@ -17,7 +17,13 @@ namespace NovibetIPStackAPI.Infrastructure.Persistence
         { 
         }
 
+        /// <summary>
+        /// Contains the IP Geolocation details of an IP address.
+        /// </summary>
         public DbSet<IPDetailsModel> IPDetails { get; set; }
+        /// <summary>
+        /// Contains useful information regarding the batch update jobs that are processed via tasks.
+        /// </summary>
         public DbSet<JobModel> Jobs { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)

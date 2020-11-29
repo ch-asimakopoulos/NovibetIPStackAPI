@@ -34,24 +34,9 @@ namespace NovibetIPStackAPI.IPStackWrapper.Services
         /// <returns>An instance of  an object that implements the <see cref="IPDetails"/> interface.</returns>
         public IPDetails GetDetails(string ip)
         {
-            Task<IPDetails> ipDetailsTask;
             try
             {
-                ipDetailsTask = new Task<IPDetails>(() =>
-                {
-                    try
-                    {
-                        return GetDetailsAsync(ip).Result;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
-                });
-                ipDetailsTask.RunSynchronously();
-                return ipDetailsTask.Result;
-
-
+                return GetDetailsAsync(ip).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -94,7 +79,7 @@ namespace NovibetIPStackAPI.IPStackWrapper.Services
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"IPStack API Exception while getting IP: {ip}. Message: {ex.Message}");
+                _logger.LogError($"IPStack API Exception while getting IP: {ip}. Message: {ex.Message}");
                 throw new IPServiceNotAvailableException(ex.Message);
             }
             finally

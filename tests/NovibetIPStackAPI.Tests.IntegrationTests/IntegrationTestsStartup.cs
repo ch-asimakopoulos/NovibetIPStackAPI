@@ -1,18 +1,22 @@
-using NovibetIPStackAPI.IPStackWrapper;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using NovibetIPStackAPI.Infrastructure;
+using NovibetIPStackAPI.Infrastructure.Repositories;
+using NovibetIPStackAPI.IPStackWrapper;
+using NovibetIPStackAPI.WebApi;
+using NovibetIPStackAPI.WebApi.Services;
 using System.IO;
 
-namespace NovibetIPStackAPI.UnitTests.IPStackWrapperTests
+namespace NovibetIPStackAPI.Tests.IntegrationTests
 {
-    public class IPWrapperTestSetup
+    public class IntegrationTestsStartup
     {
         public readonly IConfiguration Configuration;
-
-        public IPWrapperTestSetup()
+        public IntegrationTestsStartup()
         {
-            ServiceCollection serviceCollection = new ServiceCollection();
-            
+
             IConfigurationRoot configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
                                                 .AddJsonFile(
                                                     path: "appsettings.tests.json",
@@ -25,11 +29,7 @@ namespace NovibetIPStackAPI.UnitTests.IPStackWrapperTests
                                                 .Build();
 
             Configuration = configuration;
-
-            serviceCollection.AddSingleton<IConfiguration>(configuration);
-
-            serviceCollection.AddIPInfoProvider();
         }
-
     }
+
 }
